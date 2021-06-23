@@ -452,8 +452,21 @@
         }, deep:true
       },
       error_point_name:{
-        handler: function(newval){
-          this.ManageMessage(this.isValid, this.error_name)
+        handler: function(){
+          let valid = true;
+          if(this.invalid || this.isAddOpen || this.required && !this.hasValid ){
+            valid = false;
+          }
+            this.ManageMessage(valid, this.error_name)
+        }
+      },
+      required:{
+        handler: function(){
+          let valid = true;
+          if(this.invalid || this.isAddOpen || this.required && !this.hasValid ){
+            valid = false;
+          }
+            this.ManageMessage(valid, this.error_name)
         }
       }
     },
