@@ -444,7 +444,7 @@
 	  hasValid:{
 	  	handler: function(newval){
 	  		let valid = false;
-	  		if(newval || !this.required){
+	  		if(newval || !this.required ){
 	  			valid = true;
 	  		}
   			this.ErrorMessage(valid);
@@ -452,7 +452,7 @@
 	  },
 	  invalid:{
 	  	handler: function(newval){
-	  		this.ErrorMessage(value);
+	  		this.ErrorMessage(this.is_valid);
 	  	}
 	  },
       isAddOpen: {
@@ -462,11 +462,7 @@
       },
       error_point_name:{
         handler: function(){
-          let valid = true;
-          if(this.invalid || this.isAddOpen || this.required && !this.hasValid ){
-            valid = false;
-          }
-            this.ManageMessage(valid, this.error_name)
+            this.ErrorMessage(this.is_valid);
         }
       },
       add_error_message_name: {
@@ -476,11 +472,7 @@
       },
       required:{
         handler: function(){
-          let valid = true;
-          if(this.invalid || this.isAddOpen || this.required && !this.hasValid ){
-            valid = false;
-          }
-            this.ManageMessage(valid, this.error_name)
+            this.ErrorMessage(this.is_valid);
         },immediate: true
       },
       //ha menet közben változik az inputmode, fixen csukódjon be a hozzáadás lehetőség.
@@ -523,6 +515,13 @@
           return {name: this.add_error_message_name, value: this.add_error_message_name}
         }
       },
+      is_valid(){
+      	let valid = true;
+	    if(this.invalid || this.isAddOpen || this.required && !this.hasValid ){
+	      valid = false;
+	    }
+	    return valid;
+      }
     },
     created() {
       window.addEventListener("resize", this.resize);
