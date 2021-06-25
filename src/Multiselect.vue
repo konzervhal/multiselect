@@ -441,11 +441,20 @@
       }
     },
     watch: {
-      isValid: {
-        handler: function(value) {
-          this.ErrorMessage(value);
-        }, immediate: true, deep: true
-      },
+	  hasValid:{
+	  	handler: function(newval){
+	  		let valid = false;
+	  		if(newval || !this.required){
+	  			valid = true;
+	  		}
+  			this.ErrorMessage(valid);
+	  	}
+	  },
+	  invalid:{
+	  	handler: function(newval){
+	  		this.ErrorMessage(value);
+	  	}
+	  },
       isAddOpen: {
         handler: function(value) {
           this.AddErrorMessage(!value)
@@ -460,6 +469,11 @@
             this.ManageMessage(valid, this.error_name)
         }
       },
+      add_error_message_name: {
+        handler: function(value) {
+          this.AddErrorMessage(!this.isAddOpen)
+        }
+      },
       required:{
         handler: function(){
           let valid = true;
@@ -467,8 +481,14 @@
             valid = false;
           }
             this.ManageMessage(valid, this.error_name)
-        }
-      }
+        },immediate: true
+      },
+      //ha menet közben változik az inputmode, fixen csukódjon be a hozzáadás lehetőség.
+      inputmode:{
+      	handler: function(){
+      		this.isOpen.value = false;
+      	}
+      } 
     },
     methods: {
       ErrorMessage(valid) {

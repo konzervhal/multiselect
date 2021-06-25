@@ -107,18 +107,6 @@ export default function useOptions (props, context, dependencies)
     }
   })
 
-  const isValid = computed(() => {
-    if(!required) return true;
-    switch (mode.value) {
-      case 'single':
-        return !_.isEmpty(internalValue.value)
-
-      case 'multiple':
-      case 'tags':
-        return !isNullish(internalValue.value) && internalValue.value.length > 0
-    }
-  })
-
   const multipleLabelText = computed(() => {
     return multipleLabel !== undefined && multipleLabel.value !== undefined
       ? multipleLabel.value(internalValue.value)
@@ -514,6 +502,5 @@ export default function useOptions (props, context, dependencies)
     refreshOptions,
     resolveOptions,
     hasValid,
-    isValid
   }
 }
