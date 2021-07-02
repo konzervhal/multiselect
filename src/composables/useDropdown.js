@@ -3,7 +3,7 @@ import {nextTick} from 'vue'
 
 export default function useDropdown (props, context, dependencies)
 {
-  const { maxHeight, disabled, searchable } = toRefs(props)
+  const { maxHeight, disabled, searchable, isSelectAll } = toRefs(props)
 
   // ============ DEPENDENCIES ============
 
@@ -30,7 +30,7 @@ export default function useDropdown (props, context, dependencies)
   })
 
   const scrollMaxHeight = computed(() => {
-    return  `${maxHeight.value - 2 }px`
+    return  `${maxHeight.value - 2 - (isSelectAll ? 40 : 0) }px`
   })
 
   // =============== METHODS ==============
