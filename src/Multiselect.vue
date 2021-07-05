@@ -138,7 +138,7 @@
         @click.prevent="clear"
       ></a>
     </div>
-    <div v-if="inputmode" class="btn" :class="{
+    <div v-if="inputmode && !disabled" class="btn" :class="{
       'btn-success': isAddOpen,
       'btn-outline-secondary': !isAddOpen
       }"
