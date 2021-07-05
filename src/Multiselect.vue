@@ -236,7 +236,6 @@
   import {inject} from 'vue'
 
   export default {
-    inject:['force_validate'],
     name: 'Multiselect',
     emits: [
       'open', 'close', 'select', 'deselect',
@@ -480,7 +479,7 @@
       	handler: function(){
       		this.isOpen.value = false;
       	}
-      } 
+      }
     },
     methods: {
       ErrorMessage(valid) {
@@ -531,6 +530,7 @@
     },
     setup(props, context)
     {
+      const force_validate = inject('force_validate', false)
       const validation_error = inject('validation_error')
       const value = useValue(props, context)
       const multiselect = useMultiselect(props, context)
@@ -600,7 +600,8 @@
         ...options,
         ...pointerAction,
         ...keyboard,
-        validation_error
+        validation_error,
+        force_validate,
       }
     }
   }
