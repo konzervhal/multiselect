@@ -15,8 +15,8 @@
     <div
       class="form-select multiselect-input"
       :class="{
-        'is-invalid':(invalid || (isAddOpen && force_validate.value) || ( force_validate.value && required && !hasValid )),
-        'is-valid': (force_validate.value && (!invalid && (!required || hasValid))),
+        'is-invalid':(invalid || (isAddOpen && force_validate) || ( force_validate && required && !hasValid )),
+        'is-valid': (force_validate && (!invalid && (!required || hasValid))),
         'add-mode': isAddOpen,
       }"
       :error_message_name="error_message_name"
