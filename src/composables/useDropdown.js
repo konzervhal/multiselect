@@ -26,7 +26,7 @@ export default function useDropdown (props, context, dependencies)
   // ============== COMPUTED ==============
 
   const contentMaxHeight = computed(() => {
-    return `${maxHeight.value}px`
+    return `${maxHeight.value + 40}px`
   })
 
   const scrollMaxHeight = computed(() => {

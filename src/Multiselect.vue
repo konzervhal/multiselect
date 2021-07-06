@@ -217,6 +217,9 @@
 
             <slot name="afterlist"></slot>
           </perfect-scrollbar>
+          <div class="multiselect-close-all d-flex align-items-center bg-light" v-if="mode !== 'single'">
+            <div class="position-absolute text-center closeall-button-container col-12"><i class="mdi mdi-playlist-check"></i> Kész</div>
+          </div>
       </div>
     </div>
   </div>
@@ -306,7 +309,7 @@
       maxHeight: {
         type: Number,
         required: false,
-        default: 300,
+        default: 320,
       },
       hideSelected: {
         type: Boolean,

@@ -359,13 +359,13 @@
   opacity: 0;
 }
 
-.multiselect-select-all{
+.multiselect-select-all, .multiselect-close-all{
   min-height: 2.5rem;
   position: relative;
   width: 100%;
 }
 
-.selectall-button-container{
+.selectall-button-container, .closeall-button-container{
   margin-left:0;
   margin-top:0;
   margin-right:0;
