@@ -1,4 +1,18 @@
-<div align="center">
+## GYN
+
+új propsok:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| **inputmode** | `Boolean` | `false` | Ezzel kiegészíthető az option list, új érték adható hozzá, amely még nem létezik a listában. Kiegészítést követően automatikusan kiválasztott lesz az új elem. |
+| **input_prefix** | `String` | `new_` | Az újonnan hozzáadott option  mindenképpen kap egy prefixet, hogy ne legyen ütközés a már meglévő lista elemeinek értéke és az új elem között!|
+| **isSelectAll** | `Boolean` | `false` | Nem single módban megjeleníthető "Mind kijelölése" illetve "Egyik sem" gomb, amely az összes option-re hatással van.|
+| **error_point_name** | `String` | `global` | A hibakezelő alapból a validation_error.form_errors[error_point_name] tömböt hozza létre ahová majd az error message kerül.|
+| **error_message_name** | `String` | `` | A hibakezelő ezt az error messaget tölti a "validation_error.form_errors[error_point_name]" tömbbe, amelynek indexe és értéke is ez a prop.|
+
+
+
+  <div align="center">
 
   <a href="https://www.npmjs.com/package/@vueform/multiselect" target="_blank">
     <img alt="npm" src="https://img.shields.io/npm/dm/@vueform/multiselect?color=%2353ca2f">

@@ -75,7 +75,7 @@ export default function useAdd (props, context, dependencies)
       return
     }
 
-    let val = {'value': add.value, 'label': add.value};
+    let val = {'value': props.inputPrefix+add.value, 'label': add.value};
     options.value.unshift(val);
     nextTick(()=>{
       update(val)

@@ -440,6 +440,10 @@
       isSelectAll: {
         type:Boolean,
         default:false
+      },
+      inputPrefix:{
+        type: String,
+        default: "new_",
       }
     },
     watch: {
