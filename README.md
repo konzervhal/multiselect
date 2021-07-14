@@ -9,6 +9,9 @@
 | **isSelectAll** | `Boolean` | `false` | Nem single módban megjeleníthető "Mind kijelölése" illetve "Egyik sem" gomb, amely az összes option-re hatással van.|
 | **error_point_name** | `String` | `global` | A hibakezelő alapból a validation_error.form_errors[error_point_name] tömböt hozza létre ahová majd az error message kerül.|
 | **error_message_name** | `String` | '' | A hibakezelő ezt az error messaget tölti a "validation_error.form_errors[error_point_name]" tömbbe, amelynek indexe és értéke is ez a prop.|
+| **add_error_message_name** | `String` | '' | Akkor lép életbe, ha a selecthez van inputmode, plusz gombra kattintunk, de a hozzáadás nem történik meg, csak nyitva marad a mező, függetlenül attól, hogy írtunk-e be valamit. 
+A hibakezelő ezt az error messaget tölti a "validation_error.form_errors[error_point_name]" tömbbe, amelynek indexe és értéke is ez a prop, ahogy az error_message_name is.|
+
 
 
 
