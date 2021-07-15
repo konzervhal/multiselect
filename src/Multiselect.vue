@@ -67,7 +67,7 @@
       </template>
 
       <!-- Add Option Input -->
-      <template v-if="isAddOpen">
+      <template v-if="isAddOpen && !disabled">
         <div class="multiselect-add">
           <input
             placeholder="Új elem hozzáadása"
@@ -484,7 +484,7 @@
       //ha menet közben változik az inputmode, fixen csukódjon be a hozzáadás lehetőség.
       inputmode:{
       	handler: function(){
-      		this.isOpen.value = false;
+      		this.closeAddInput();
       	}
       }
     },

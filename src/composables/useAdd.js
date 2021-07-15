@@ -50,6 +50,11 @@ export default function useAdd (props, context, dependencies)
   //   })
   // }
 
+  const closeAddInput = () => {
+      add.value = ''
+      isOpen.value = false
+  }
+
   const openAdd = () => {
     if(!isOpen.value) {
       isOpen.value = true;
@@ -105,6 +110,7 @@ export default function useAdd (props, context, dependencies)
     isAddOpen,
     openAdd,
     addinput,
+    closeAddInput,
     // blurAdd,
     // tagsSearchWidth,
     // clearSearch,

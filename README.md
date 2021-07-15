@@ -11,6 +11,11 @@
 | **error_message_name** | `String` | '' | A hibakezelő ezt az error messaget tölti a "validation_error.form_errors[error_point_name]" tömbbe, amelynek indexe és értéke is ez a prop.|
 | **add_error_message_name** | `String` | '' | Akkor lép életbe, ha a selecthez van inputmode, plusz gombra kattintunk, de a hozzáadás nem történik meg, csak nyitva marad a mező, függetlenül attól, hogy írtunk-e be valamit. A hibakezelő ezt az error messaget tölti a "validation_error.form_errors[error_point_name]" tömbbe, amelynek indexe és értéke is ez a prop, ahogy az error_message_name is.|
 
+új, kívülről hívható, fontosabb functionok:
+
+| Name | Description |
+| --- | --- |
+| **closeAddInput** | Ha manuálisan kell becsukni az inputmode miatti mezőt, DOM-ból ref-el elérhető ez a function. Inputmode kikapcsolásakor automatikusan ez csukja be az input mezőt. |
 
 
 
