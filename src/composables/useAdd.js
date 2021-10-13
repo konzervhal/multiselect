@@ -1,4 +1,4 @@
-import { ref, toRefs, computed, watch, nextTick } from 'composition-api'
+import { ref, toRefs, computed, watch, nextTick, inject } from 'composition-api'
 
 export default function useAdd (props, context, dependencies)
 {
@@ -7,11 +7,12 @@ export default function useAdd (props, context, dependencies)
   // ============ DEPENDENCIES ============
   const select = dependencies.select
   const update = dependencies.update
+  const isAddOpen = dependencies.isAddOpen
 
   // ================ DATA ================
 
   const add = ref(null)
-  const isOpen = ref(false)
+  // const isOpen = ref(false)
   const addinput = ref(null)
 
   // ============== COMPUTED ==============
@@ -26,10 +27,10 @@ export default function useAdd (props, context, dependencies)
   //   }
 
   //   return '1ch'
+  // // })
+  // const isAddOpen = computed(() => {
+  //   return isOpen.value;
   // })
-    const isAddOpen = computed(() => {
-      return isOpen.value;
-    })
 
 
   // =============== METHODS ==============
@@ -50,21 +51,18 @@ export default function useAdd (props, context, dependencies)
   //   })
   // }
 
-  const closeAddInput = () => {
-      add.value = ''
-      isOpen.value = false
-  }
-
   const openAdd = () => {
-    if(!isOpen.value) {
-      isOpen.value = true;
+    if(!isAddOpen.value) {
+      // isOpen.value = true;
+      isAddOpen.value = true;
       add.value = '';
       nextTick(()=>{
         addinput.value.focus();
       })
     } else {
       saveAdd()
-      isOpen.value = false;
+      // isOpen.value = false;
+      isAddOpen.value = false;
     }
   }
 
@@ -110,7 +108,6 @@ export default function useAdd (props, context, dependencies)
     isAddOpen,
     openAdd,
     addinput,
-    closeAddInput,
     // blurAdd,
     // tagsSearchWidth,
     // clearSearch,

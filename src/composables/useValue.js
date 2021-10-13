@@ -2,19 +2,33 @@ import { computed, toRefs, ref } from 'composition-api'
 
 export default function useValue (props, context)
 {
-  const { value, modelValue, mode } = toRefs(props)
+  const { value, modelValue, mode, valueProp } = toRefs(props)
 
   // ================ DATA ================
 
-  const internalValue = ref(mode.value !== 'single' ? [] : {})
+  // internalValue
+  const iv = ref(mode.value !== 'single' ? [] : {})
 
   // ============== COMPUTED ==============
 
   /* istanbul ignore next */
-  const externalValue = context.expose !== undefined ? modelValue : value
+  // externalValue
+  const ev = context.expose !== undefined ? modelValue : value
+
+  const plainValue = computed(() => {
+    return mode.value === 'single' ? iv.value[valueProp.value] : iv.value.map(v=>v[valueProp.value])
+  })
+
+  const textValue = computed(() => {
+    return mode.value !== 'single' ? iv.value.map(v=>v[valueProp.value]).join(',') : iv.value[valueProp.value]
+  })
 
   return {
-    internalValue,
-    externalValue,
+    iv,
+    internalValue: iv,
+    ev,
+    externalValue: ev,
+    textValue,
+    plainValue,
   }
 }

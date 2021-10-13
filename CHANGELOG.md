@@ -1,3 +1,148 @@
+## v2.2.0
+
+> `2021-09-09`
+
+### 🎉 Feature
+  - 🎉🎉 Added `groups` and related props which allow groupping options. 🎉🎉
+  - Added `tailwind.scss` theme to use instead of `classes` if needed.
+  - Added support for case sensitive tags when `createTag` is `true` [#119](https://github.com/vueform/multiselect/issues/119).
+  - Added `inputType` prop [#108](https://github.com/vueform/multiselect/issues/116), [#116](https://github.com/vueform/multiselect/issues/116).
+  - Added `@paste` event [#105](https://github.com/vueform/multiselect/issues/105).
+  - Added `tab` as option for `addTagOn` [#117](https://github.com/vueform/multiselect/issues/117).
+  - Updated default `max-height` for dropdown (to `15rem`).
+
+
+### 🐞 Bug Fixes
+  - When `closeOnSelect` is `true` in `searchable` `tags` and `multiple` mode the input now blurs upon selecting an option.
+  - Fix for empty dropdown when async options are loading [#115](https://github.com/vueform/multiselect/issues/115).
+  - Fixed dropdown auto-scrolling when using arrows.
+
+## v2.1.2
+
+> `2021-08-09`
+
+### 🐞 Bug Fixes
+  - Removed async/await.
+
+## v2.1.1
+
+> `2021-08-09`
+
+### 🎉 Feature
+  - Added `closeOnSelect` prop.
+
+### 🐞 Bug Fixes
+  - Clear search on single option select [#99](https://github.com/vueform/multiselect/issues/99) and [#106](https://github.com/vueform/multiselect/issues/106).
+  - No blur when tags are being removed.
+
+
+## v2.1.0
+
+> `2021-07-26`
+
+### 🎉 Feature
+  - **BREAKING**: `dropdown` class now has `dropdownHidden` when it is closed instead of using `v-show` (requires using 2.1.0's `themes/default.css`)
+  - **BREAKING**: removed `:maxHeight` prop. Use `var(--ms-max-height)` instead.
+  - **BREAKING**: tags search layout has changed -> added a wrapper div and an extra span to calculate input width.
+  - Dropddown can be closed on caret click [#88](https://github.com/vueform/multiselect/issues/88).
+  - Added `:strict` prop to achieve accent-free search [#82](https://github.com/vueform/multiselect/issues/82).
+  - Removed inline styles, CSP compilance [#84](https://github.com/vueform/multiselect/issues/84).
+  - Background images are now customizable via `background-color` [#85](https://github.com/vueform/multiselect/issues/85).
+  
+### 🐞 Bug Fixes
+  - Free typed tags fix [#96](https://github.com/vueform/multiselect/issues/96).
+  - Tabindex becomes `-1` when `:disabled`.
+
+## v2.0.1
+
+> `2021-06-27`
+
+### 🎉 Feature
+  - Classname fixes.
+  - Readme update.
+
+## v2.0.0
+
+> `2021-06-20`
+
+### 🎉 Feature
+  - **BREAKING**: Completely rewritten `<template>` and `default.css`.
+  - Caret is now always displayed when `caret: true` regardless if the multiselect has selected option(s).
+  - Added `canDeselect` and `classes` prop.
+  - Added `;` and `,` options to `addTagOn` prop.
+  
+## v1.5.0
+
+> `2021-05-17`
+
+### 🎉 Feature
+  - Added native input support [#48](https://github.com/vueform/multiselect/issues/48).
+  - Added `openDirection` prop [#52](https://github.com/vueform/multiselect/issues/52).
+  - Added `option` as second param for `select` and `deselect` events.
+  - Added `@clear` event [#68](https://github.com/vueform/multiselect/issues/68).
+
+### 🐞 Bug Fixes
+  - Clear icon CSS fix.
+  - Fixed unintendeed clear button showing up when `canDeselect` is `false` [#61](https://github.com/vueform/multiselect/issues/61).
+
+## v1.4.0
+
+> `2021-04-06`
+
+### 🎉 Feature
+  - **BREAKING**: array `options` are no longer treated as objects, but both option value and label will equal to array item value. Eg. `option: ['v1','v2']` used to be equal to `{0: 'v1', 1: 'v2'}`, now they're equal to `{v1: 'v1', v2: 'v2'}`.
+  - Optimized variable names for lower package size.
+
+## v1.3.7
+
+> `2021-04-06`
+
+### 🐞 Bug Fixes
+  - Async options fix for [#39](https://github.com/vueform/multiselect/issues/39). Refreshing non-async options now will only be reflected after a tick.
+
+### 🎉 Feature
+  - Added caret, remove and spinner slots.
+
+## v1.3.6
+
+> `2021-03-30`
+
+### 🐞 Bug Fixes
+  - Remove extra space when creating a tag with space ([#46](https://github.com/vueform/multiselect/issues/46)).
+  - Fixed issues around refreshing async options ([#45](https://github.com/vueform/multiselect/issues/45)).
+  - Android keyboard fix ([#49](https://github.com/vueform/multiselect/issues/49) & [#50](https://github.com/vueform/multiselect/issues/50)).
+
+### 🎉 Feature
+  - Added installation guide for Nuxt.js.
+
+## v1.3.5
+
+> `2021-03-20`
+
+### 🐞 Bug Fixes
+  - Fix for unintended side effect on space when using single mode ([#42](https://github.com/vueform/multiselect/issues/42)).
+
+## v1.3.4
+
+> `2021-03-13`
+
+### 🐞 Bug Fixes
+  - Recursion error when accessing `value` inside computed `options` ([#39](https://github.com/vueform/multiselect/issues/39)).
+  - Set initial value when options are loaded later ([#40](https://github.com/vueform/multiselect/issues/40)).
+
+## v1.3.3
+
+> `2021-03-12`
+
+### 🐞 Bug Fixes
+  - Selected items' label update when options label change ([#39](https://github.com/vueform/multiselect/issues/39)).
+  - Horizontal scroll fix ([#31](https://github.com/vueform/multiselect/issues/31)).
+
+### 🎉 Feature
+  - Added `addTagOn` that can enable `enter` and/or `space` key to create a tag.
+  - Added `required` prop that renders a HTML5 required attribute on a fake input next to multiselect.
+  - Added `showOptions` prop that hide options list if somebody wants to have only a free-type tag list.
+
 ## v1.3.2
 
 > `2021-02-05`

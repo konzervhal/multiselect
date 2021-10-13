@@ -1,27 +1,28 @@
 import { toRefs } from 'composition-api'
 import isNullish from './../utils/isNullish'
 
-export default function useData (props, context, dependencies)
+export default function useData (props, context, dep)
 {
   const { object, valueProp, mode } = toRefs(props)
 
   // ============ DEPENDENCIES ============
 
-  const internalValue = dependencies.internalValue
+  const iv = dep.iv
 
   // =============== METHODS ==============
 
   const update = (val) => {
     // Setting object(s) as internal value
-    internalValue.value = makeInternal(val)
+    iv.value = makeInternal(val)
 
-    // Setting object(s) or plain value as external
+    // Setting object(s) or plain value as external 
     // value based on `option` setting
     const externalVal = makeExternal(val)
+
     context.emit('change', externalVal)
     context.emit('input', externalVal)
     context.emit('update:modelValue', externalVal)
-  }
+  } 
 
   // no export
   const makeExternal = (val) => {
@@ -30,7 +31,6 @@ export default function useData (props, context, dependencies)
     if (object.value) {
       return val
     }
-
 
     // No need to transform if empty value
     if (isNullish(val)) {

@@ -1,33 +1,12 @@
-import { ref, toRefs, computed, watch, nextTick } from 'composition-api'
+import { ref, toRefs, computed, watch } from 'composition-api'
 
-export default function useSearch (props, context, dependencies)
+export default function useSearch (props, context, dep)
 {
-  const { searchable, mode } = toRefs(props)
-
-  // ============ DEPENDENCIES ============
-
-  const internalValue = dependencies.internalValue
-  const update = dependencies.update
-
   // ================ DATA ================
 
   const search = ref(null)
 
   const input = ref(null)
-
-  // ============== COMPUTED ==============
-
-  const tagsSearchWidth = computed(() => {
-    if (search.value) {
-      return `${search.value.length}ch`
-    }
-
-    if (mode.value !== 'tags' || [null, undefined].indexOf(internalValue.value) !== -1 || !internalValue.value.length) {
-      return '100%'
-    }
-
-    return '1ch'
-  })
 
 
   // =============== METHODS ==============
@@ -36,17 +15,12 @@ export default function useSearch (props, context, dependencies)
     search.value = ''
   }
 
-  const focusSearch = () => {
-    input.value.focus()
+  const handleSearchInput = (e) => {
+    search.value = e.target.value
   }
 
-  const blurSearch = () => {
-    if (!searchable.value) {
-      return
-    }
-    nextTick(() => {
-      input.value.blur()
-    })
+  const handlePaste = (e) => {
+    context.emit('paste', e)
   }
 
   // ============== WATCHERS ==============
@@ -58,9 +32,8 @@ export default function useSearch (props, context, dependencies)
   return {
     search,
     input,
-    tagsSearchWidth,
     clearSearch,
-    focusSearch,
-    blurSearch,
+    handleSearchInput,
+    handlePaste,
   }
 }

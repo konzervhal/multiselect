@@ -14,42 +14,10 @@ describe('useSearch', () => {
     it('should equal to search input', () => {
       let select = createSelect({
         searchable: true,
+        inputType: 'search',
       })
 
-      expect(select.vm.input.type).toBe('text')
-    })
-  })
-
-  describe('tagsSearchWidth', () => {
-    it('should be equal to length of search with ch suffix', () => {
-      let select = createSelect({
-        mode: 'tags',
-        options: [1,2,3],
-      })
-
-      select.vm.search = 'value'
-
-      expect(select.vm.tagsSearchWidth).toBe('5ch')
-    })
-
-    it('should be 100% if search and value are empty', () => {
-      let select = createSelect({
-        mode: 'tags',
-        options: [1,2,3],
-        value: [],
-      })
-
-      expect(select.vm.tagsSearchWidth).toBe('100%')
-    })
-
-    it('should be 1ch if search is but value isn\'t empty', () => {
-      let select = createSelect({
-        mode: 'tags',
-        options: [1,2,3],
-        value: [1],
-      })
-
-      expect(select.vm.tagsSearchWidth).toBe('1ch')
+      expect(select.vm.input.type).toBe(select.vm.inputType)
     })
   })
 
@@ -65,37 +33,38 @@ describe('useSearch', () => {
     })
   })
 
-  describe('blurSearch', () => {
-    it('should blur search input if searchable', () => {
-      let blurMock = jest.fn()
-
+  describe('handleSearchInput', () => {
+    it('should set search value on input', async () => {
       let select = createSelect({
+        value: null,
+        options: [1,2,3],
         searchable: true,
       })
 
-      select.vm.input.blur = blurMock
-
-      select.vm.blurSearch()
-
-      expect(blurMock).toHaveBeenCalled()
-    })
-
-    it('should not blur search input if not searchable', async () => {
-      let blurMock = jest.fn()
-
-      let select = createSelect({
-        searchable: true,
-      })
-
-      select.vm.input.blur = blurMock
-
-      select.vm.$parent.props.searchable = false
+      select.vm.input.value = 'aaa'
+      select.vm.input.dispatchEvent(new Event('input'))
 
       await nextTick()
 
-      select.vm.blurSearch()
+      expect(select.vm.search).toBe('aaa')
+    })
+  })
 
-      expect(blurMock).not.toHaveBeenCalled()
+  describe('handlePaste', () => {
+    it('should emit paste event on @paste', async () => {
+      let select = createSelect({
+        value: null,
+        options: [1,2,3],
+        searchable: true,
+      })
+
+      const e = new Event('paste')
+
+      select.vm.input.dispatchEvent(e)
+
+      await nextTick()
+
+      expect(select.emitted('paste')[0][0]).toBe(e)
     })
   })
 

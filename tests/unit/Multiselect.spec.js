@@ -11,7 +11,111 @@ describe('Multiselect', () => {
       expect(createSelect().exists()).toBe(true)
     })
 
-    it('should render options if open', async () => {
+    it('should render fake input if required mode=single', () => {
+      let select = createSelect({
+        value: 'value1',
+        options: ['value1', 'value2', 'value3'],
+        required: true,
+      }, {
+        attach: true,
+      })
+      
+      expect(select.find('.multiselect-fake-input').element).toBeVisible()
+      expect(select.find('.multiselect-fake-input').element.value).toBe('value1')
+    })
+
+    it('should not render native inputs if nativeInput=false', () => {
+      let select = createSelect({
+        mode: 'single',
+        value: 'value1',
+        options: ['value1', 'value2', 'value3'],
+        nativeSupport: false
+      })
+      
+      expect(select.find('input[type="hidden"]').exists()).toBe(false)
+    })
+
+    it('should not render native inputs if nativeInput=false,mode=single', async () => {
+      let select = createSelect({
+        mode: 'single',
+        value: 'value1',
+        options: ['value1', 'value2', 'value3'],
+        nativeSupport: true,
+        name: 'select',
+      })
+      
+      expect(select.find('input[type="hidden"]').element.value).toBe('value1')
+      expect(select.find('input[type="hidden"]').element.name).toBe('select')
+
+      select.vm.clear()
+
+      await nextTick()
+
+      expect(select.find('input[type="hidden"]').element.value).toBe('')
+    })
+
+    it('should not render native inputs if nativeInput=false,mode=multiple', async () => {
+      let select = createSelect({
+        mode: 'multiple',
+        value: ['value1', 'value2'],
+        options: ['value1', 'value2', 'value3'],
+        nativeSupport: true,
+        name: 'select',
+      })
+      
+      expect(findAll(select, 'input[type="hidden"]').at(0).element.value).toBe('value1')
+      expect(findAll(select, 'input[type="hidden"]').at(0).element.name).toBe('select[]')
+      expect(findAll(select, 'input[type="hidden"]').at(1).element.value).toBe('value2')
+      expect(findAll(select, 'input[type="hidden"]').at(1).element.name).toBe('select[]')
+
+      select.vm.clear()
+
+      await nextTick()
+
+      expect(select.find('input[type="hidden"]').exists()).toBe(false)
+    })
+
+    it('should render fake input if required mode=multiple', () => {
+      let select = createSelect({
+        mode: 'multiple',
+        value: ['value1', 'value2'],
+        options: ['value1', 'value2', 'value3'],
+        required: true,
+      }, {
+        attach: true,
+      })
+      
+      expect(select.find('.multiselect-fake-input').element).toBeVisible()
+      expect(select.find('.multiselect-fake-input').element.value).toBe('value1,value2')
+    })
+
+    it('should not render fake input if not required', () => {
+      let select = createSelect({
+        value: 1,
+        options: ['value1', 'value2', 'value3'],
+        required: false,
+      }, {
+        attach: true,
+      })
+      
+      expect(select.find('.multiselect-fake-input').exists()).toBe(false)
+    })
+
+    it('should not render dropdown if showOptions is false', async () => {
+      let select = createSelect({
+        options: ['value1', 'value2', 'value3'],
+        valueProp: 'v',
+        showOptions: false,
+      }, {
+        attach: true,
+      })
+
+      let dropdown = findAll(select, '.multiselect-dropdown').at(0)
+      
+      expect(dropdown.element.classList.contains('is-hidden')).toBe(true)
+    })
+
+    it('should render dropdown if open', async () => {
       let select = createSelect({
         options: ['value1', 'value2', 'value3'],
         valueProp: 'v',
@@ -25,13 +129,13 @@ describe('Multiselect', () => {
       expect(options.at(0).html()).toContain('value1')
       expect(options.at(1).html()).toContain('value2')
       expect(options.at(2).html()).toContain('value3')
-      expect(select.find('.multiselect-options').element).not.toBeVisible()
+      expect(findAll(select, '.multiselect-dropdown').at(0).element.classList.contains('is-hidden')).toBe(true)
       
       select.vm.open()
 
       await nextTick()
 
-      expect(select.find('.multiselect-options').element).toBeVisible()
+      expect(findAll(select, '.multiselect-dropdown').at(0).element.classList.contains('is-hidden')).toBe(false)
 
       destroy(select)
     })
@@ -53,13 +157,38 @@ describe('Multiselect', () => {
         expect(options.at(1).html()).toContain('value2')
     })
 
-    it('should options have max height defined as maxHeight', () => {
+    it('should render filtered groups', async () => {
         let select = createSelect({
-          options: [1,2,3],
-          maxHeight: 300,
+          options: [
+            {
+              label: 'First',
+              options: ['value1', 'value2']
+            },
+            {
+              label: 'Second',
+              options: ['value3', '4']
+            },
+          ],
+          groups: true,
         })
 
-        expect(select.find('.multiselect-options').element.style.maxHeight).toBe('300px')
+        select.vm.search = 'value'
+
+        await nextTick()
+
+        let groups = findAll(select, '.multiselect-group')
+        let groupLabels = findAll(select, '.multiselect-group')
+        let options = findAll(select, '.multiselect-option')
+
+        expect(groups.length).toBe(2)
+        expect(groupLabels.length).toBe(2)
+        expect(groupLabels.at(0).html()).toContain('First')
+        expect(groupLabels.at(1).html()).toContain('Second')
+
+        expect(options.length).toBe(3)
+        expect(options.at(0).html()).toContain('value1')
+        expect(options.at(1).html()).toContain('value2')
+        expect(options.at(2).html()).toContain('value3')
     })
 
     it('should set pointer to option on mouseenter', async () => {
@@ -71,104 +200,7 @@ describe('Multiselect', () => {
 
         await nextTick()
 
-        expect(select.vm.pointer).toStrictEqual(select.vm.getOption(1))
-    })
-
-    it('should select option on click and blur', async () => {
-        let blurMock = jest.fn()
-        
-        let select = createSelect({
-          value: null,
-          options: [1,2,3],
-          valueProp: 'v',
-        }, {
-          attach: true,
-        })
-
-        select.find('.multiselect-input').element.blur = blurMock
-
-        findAll(select, '.multiselect-option').at(1).trigger('click')
-
-        await nextTick()
-
-        expect(getValue(select)).toStrictEqual(1)
-        expect(blurMock).toHaveBeenCalled()
-
-        destroy(select)
-    })
-
-    it('should open on focus', () => {
-      let select = createSelect()
-
-      select.find('.multiselect-input').trigger('focus')
-
-      expect(select.vm.isOpen).toBe(true)
-    })
-    
-    it('should close on blur', () => {
-      let select = createSelect()
-
-      select.find('.multiselect-input').trigger('focus')
-      select.find('.multiselect-input').trigger('blur')
-
-      expect(select.vm.isOpen).toBe(false)
-    })
-
-    it('should close, clear pointer and blur on escape', async () => {
-      let blurMock = jest.fn()
-
-      let select = createSelect({
-        options: [1,2,3],
-        value: 1,
-      })
-
-      select.vm.pointer = select.vm.getOption(1)
-      select.vm.open()
-      select.find('.multiselect-input').element.blur = blurMock
-
-      keyup(select.find('.multiselect-input'), 'escape')
-
-      await nextTick()
-
-      expect(select.vm.pointer).toBe(null)
-      expect(select.vm.isOpen).toBe(false)
-      expect(blurMock).toHaveBeenCalled()
-    })
-
-    it('should remove last element on backspace', async () => {
-      let select = createSelect({
-        mode: 'multiple',
-        options: [1,2,3],
-        value: [0,1],
-      })
-
-      keydown(select.find('.multiselect-input'), 'backspace')
-
-      await nextTick()
-
-      expect(getValue(select)).toStrictEqual([0])
-    })
-
-    it('should set pointer on up&down and select with enter', async () => {
-      let select = createSelect({
-        options: [1,2,3],
-        value: null,
-      }, {
-        attach: true,
-      })
-
-      select.vm.open()
-      keydown(select.find('.multiselect-input'), 'down')
-      keydown(select.find('.multiselect-input'), 'down')
-      keydown(select.find('.multiselect-input'), 'down')
-      keydown(select.find('.multiselect-input'), 'up')
-      keyup(select.find('.multiselect-input'), 'enter')
-
-      await nextTick()
-
-      expect(getValue(select)).toStrictEqual(1)
-
-      destroy(select)
+        expect(select.vm.pointer).toStrictEqual(select.vm.getOption(2))
     })
   })
 
@@ -222,7 +254,7 @@ describe('Multiselect', () => {
     describe('label', () => {
       it('should render label if has value', () => {
         let select = createSelect({
-          value: 1,
+          value: 'value2',
           options: ['value1','value2','value3'],
         })
 
@@ -308,7 +340,7 @@ describe('Multiselect', () => {
       it('should render label if has value', () => {
         let select = createSelect({
           mode: 'multiple',
-          value: [1],
+          value: ['value2'],
           options: ['value1','value2','value3'],
         })
 
@@ -355,9 +387,20 @@ describe('Multiselect', () => {
       it('should not render clear if disabled', () => {
         let select = createSelect({
           mode: 'multiple',
-          value: [1],
+          value: ['value1'],
           disabled: true,
           options: ['value1','value2','value3'],
+        })
+
+        expect(select.find('.multiselect-clear').exists()).toBe(false)
+      })
+
+      it('should not render clear if canClear is false', () => {
+        let select = createSelect({
+          mode: 'single',
+          value: ['value1'],
+          options: ['value1','value2','value3'],
+          canClear: false,
         })
 
         expect(select.find('.multiselect-clear').exists()).toBe(false)
@@ -366,7 +409,7 @@ describe('Multiselect', () => {
       it('should render clear has options', () => {
         let select = createSelect({
           mode: 'multiple',
-          value: [1],
+          value: ['value2'],
           options: ['value1','value2','value3'],
         })
 
@@ -376,11 +419,11 @@ describe('Multiselect', () => {
       it('should clear value on clicking clear', async () => {
         let select = createSelect({
           mode: 'multiple',
-          value: [0,1,2],
+          value: ['value1','value2','value3'],
           options: ['value1','value2','value3'],
         })
 
-        select.find('.multiselect-clear').trigger('click')
+        select.find('.multiselect-clear').trigger('mousedown')
 
         await nextTick()
 
@@ -453,7 +496,7 @@ describe('Multiselect', () => {
       it('should show tags if has value', () => {
         let select = createSelect({
           mode: 'tags',
-          value: [0,1],
+          value: ['value1', 'value2'],
           options: ['value1', 'value2', 'value3'],
         })
 
@@ -467,17 +510,17 @@ describe('Multiselect', () => {
       it('should show remove icon for tags if not disabled', () => {
         let select = createSelect({
           mode: 'tags',
-          value: [0],
+          value: [1],
           options: [1,2,3],
         })
 
-        expect(findAll(select, '.multiselect-tag').at(0).find('i').exists()).toBe(true)
+        expect(findAll(select, '.multiselect-tag').at(0).find('.multiselect-tag-remove').exists()).toBe(true)
       })
 
       it('should not show remove icon for tags if disabled', () => {
         let select = createSelect({
           mode: 'tags',
-          value: [0],
+          value: [1],
           options: [1,2,3],
           disabled: true,
         })
@@ -490,11 +533,11 @@ describe('Multiselect', () => {
       it('should deselect value on tag remove if left button is clicked', async () => {
         let select = createSelect({
           mode: 'tags',
-          value: [0],
+          value: [1],
           options: [1,2,3],
         })
 
-        findAll(select, '.multiselect-tag').at(0).find('i').trigger('mousedown', { button: 0 })
+        findAll(select, '.multiselect-tag').at(0).find('.multiselect-tag-remove').trigger('mousedown', { button: 0 })
 
         await nextTick()
 
@@ -504,15 +547,15 @@ describe('Multiselect', () => {
       it('should not deselect value on tag remove if not left button is clicked', async () => {
         let select = createSelect({
           mode: 'tags',
-          value: [0],
+          value: [1],
           options: [1,2,3],
         })
 
-        findAll(select, '.multiselect-tag').at(0).find('i').trigger('mousedown', { button: 2 })
+        findAll(select, '.multiselect-tag').at(0).find('.multiselect-tag-remove').trigger('mousedown', { button: 2 })
 
         await nextTick()
 
-        expect(getValue(select)).toStrictEqual([0])
+        expect(getValue(select)).toStrictEqual([1])
       })
     })
 
@@ -530,7 +573,7 @@ describe('Multiselect', () => {
       it('should not render clear if disabled', () => {
         let select = createSelect({
           mode: 'tags',
-          value: [1],
+          value: ['value2'],
           disabled: true,
           options: ['value1','value2','value3'],
         })
@@ -541,7 +584,7 @@ describe('Multiselect', () => {
       it('should render clear has options', () => {
         let select = createSelect({
           mode: 'tags',
-          value: [1],
+          value: ['value2'],
           options: ['value1','value2','value3'],
         })
 
@@ -551,7 +594,7 @@ describe('Multiselect', () => {
       it('should not render clear if disabled', () => {
         let select = createSelect({
           mode: 'tags',
-          value: [1],
+          value: ['value2'],
           disabled: true,
           options: ['value1','value2','value3'],
         })
@@ -562,11 +605,11 @@ describe('Multiselect', () => {
       it('should clear value on clicking clear', async () => {
         let select = createSelect({
           mode: 'tags',
-          value: [0,1,2],
+          value: ['value1','value2','value3'],
           options: ['value1','value2','value3'],
         })
 
-        select.find('.multiselect-clear').trigger('click')
+        select.find('.multiselect-clear').trigger('mousedown')
 
         await nextTick()
 
@@ -581,7 +624,7 @@ describe('Multiselect', () => {
         let select = createSelect({
           mode: 'tags',
           options: [1,2,3],
-          value: [0,1],
+          value: [1,2],
           searchable: true,
         })
 
@@ -591,7 +634,7 @@ describe('Multiselect', () => {
 
         await nextTick()
 
-        expect(getValue(select)).toStrictEqual([0])
+        expect(getValue(select)).toStrictEqual([1])
       })
 
       it('should not remove last element on backspace if search is not empty', async () => {
@@ -609,22 +652,6 @@ describe('Multiselect', () => {
         await nextTick()
 
         expect(getValue(select)).toStrictEqual([0,1])
-      })
-
-      it('should have search width according to search length', async () => {
-        let select = createSelect({
-          mode: 'tags',
-          options: [1,2,3],
-          value: [0,1],
-          searchable: true,
-        })
-
-        select.vm.search = 'value'
-
-        await nextTick()
-
-        expect(select.find('.multiselect-tags .multiselect-search').element.style.width).toBe('5ch')
-        expect(select.find('input').element.style.width).toBe('5ch')
       })
     })
   })
