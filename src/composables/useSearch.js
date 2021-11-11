@@ -1,7 +1,12 @@
-import { ref, toRefs, computed, watch } from 'composition-api'
+import { ref, toRefs, computed, watch, nextTick } from 'composition-api'
 
 export default function useSearch (props, context, dep)
 {
+
+// dependencies
+  const dropdown = dep.dropdown
+  const multiselect = dep.multiselect
+
   // ================ DATA ================
 
   const search = ref(null)
@@ -17,6 +22,14 @@ export default function useSearch (props, context, dep)
 
   const handleSearchInput = (e) => {
     search.value = e.target.value
+    if(multiselect.value) {
+      nextTick(()=>{
+        const d = multiselect.optionRows.value;
+        if(multiselect.value.clientWidth > d.clientWidth) {
+          d.style.setProperty('min-width', multiselect.value.clientWidth + 2 +'px')
+        }
+      })
+    }
   }
 
   const handlePaste = (e) => {

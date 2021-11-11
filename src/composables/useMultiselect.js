@@ -12,6 +12,7 @@ export default function useMultiselect (props, context, dep)
   const clearSearch = dep.clearSearch
   const isOpen = dep.isOpen
   const isAddOpen = dep.isAddOpen
+  const multi = dep.multi
 
   // ================ DATA ================
 
@@ -23,6 +24,9 @@ export default function useMultiselect (props, context, dep)
   const observed = ref(false)
   const options_container = ref(null)
   const optionRows = ref(null)
+  const newPos = ref(null)
+  const addGomb = ref(0)
+
 
   // ============== COMPUTED ==============
 
@@ -58,24 +62,36 @@ export default function useMultiselect (props, context, dep)
   }
 
   const setDropPosition = (item) => {
-    let m = multiselect.value.getBoundingClientRect();
+    const m = multiselect.value.getBoundingClientRect();
+
+    item.style.right = 'inherit'
+    item.style.bottom = 'inherit'
+    item.style.transform = 'inherit'
 
     if(props.container === 'body') {
-      item.style.right = 'inherit'
-      item.style.bottom = 'inherit'
-      item.style.transform = 'inherit'
       item.style.left = m.x+'px';
       item.style.top = m.bottom+'px';
     }
 
-    let contx = containerBound().x + containerBound().width;
-    let conty = containerBound().y + containerBound().height;
-    let dropx = item.getBoundingClientRect().x + item.getBoundingClientRect().width;
-    let dropy = item.getBoundingClientRect().y + item.getBoundingClientRect().height;
+    const contx = containerBound().x + containerBound().width;
+    const conty = containerBound().y + containerBound().height;
+    const dropx = item.getBoundingClientRect().x + item.getBoundingClientRect().width;
+    const dropy = item.getBoundingClientRect().y + item.getBoundingClientRect().height;
 
     if(dropx > contx) {
-      // item.style.removeProperty('left');
-      item.style.left = m.x - (item.getBoundingClientRect().width - m.width)+'px'  //(m.width - item.getBoundingClientRect().width)+'px';
+
+      if(props.container === 'body') {
+        newPos.value = m.x - (item.getBoundingClientRect().width - (m.width +  getGombWidth())) ;
+
+        if(newPos.value < 0 ) {
+          item.style.maxWidth = (item.getBoundingClientRect().width - Math.abs(newPos.value)) + 'px'
+          newPos.value = 0;
+        }
+        item.style.left = newPos.value+'px'
+      } else {
+        item.style.removeProperty('left');
+        item.style.left = (m.width - item.getBoundingClientRect().width)+'px';
+      }
     }
 
     if(containerBound().height > item.getBoundingClientRect().height) {
@@ -88,7 +104,7 @@ export default function useMultiselect (props, context, dep)
 
   const resetDropPosition = (item) => {
 
-    let m = multiselect.value.getBoundingClientRect();
+    const m = multiselect.value.getBoundingClientRect();
     item.style.left = 0;
     item.style.top = m.height+'px';
     item.style.removeProperty('width');
@@ -97,14 +113,12 @@ export default function useMultiselect (props, context, dep)
   }
 
   const openDropdown = () => {
+    setMulti();
     if (disabled.value || isAddOpen.value ) { //||
       return
     }
 
-    let d = multiselect.value.querySelector('.multiselect-dropdown');
-    if(!d) return
-
-    let c = multiselect.value.querySelector('.selectall-button-container');
+    const c = multiselect.value.querySelector('.selectall-button-container');
     if(props.container === 'body') {
       document.addEventListener('scroll', setScrollPosition, true)
       document.body.append(optionRows.value)
@@ -114,22 +128,20 @@ export default function useMultiselect (props, context, dep)
     context.emit('open')
 
     nextTick(() => {
-      if(multiselect.value.clientWidth > d.clientWidth) {
-        d.style.setProperty('min-width', multiselect.value.clientWidth + 2 +'px')
-      }
+      optionRows.value.style.setProperty('min-width', multiselect.value.clientWidth + getGombWidth() + 2 +'px')
 
-      if(c) {
-        c.style.width = d.clientWidth +"px";
-      }
-
-      resetDropPosition(d)
-      setDropPosition(d)
+      updateDropPosition();
 
       if(!observed.value) {
-        observeCallback.observe(d);
+        observeCallback.observe(optionRows.value);
         observed.value = true;
       }
     })
+  }
+
+  const updateDropPosition = () => {
+      resetDropPosition(optionRows.value)
+      setDropPosition(optionRows.value)
   }
 
   const closeDropdown = (e) => {
@@ -162,8 +174,11 @@ export default function useMultiselect (props, context, dep)
 
   const handleInputMousedown = (e) => {
     if (isOpen.value && !searchable.value) {
-      multiselect.value.querySelector('.multiselect-input').dispatchEvent(new Event('blur'))
-      multiselect.value.querySelector('.multiselect-input').blur()
+      const input = multiselect.value.querySelector('.multiselect-input');
+      if(input) {
+        input.dispatchEvent(new Event('blur'))
+        input.blur()
+      }
       e.preventDefault()
     }
   }
@@ -171,6 +186,7 @@ export default function useMultiselect (props, context, dep)
 
 
   const blur = () => {
+    if(!input.value) return
     if (searchable.value) {
       input.value.blur()
     }
@@ -178,7 +194,8 @@ export default function useMultiselect (props, context, dep)
     multiselect.value.blur()
   }
 
-  const handleFocus = () => {
+  const handleFocus = (e) => {
+    if(disabled.value) return false
     if (searchable.value && !disabled.value) {
       if(input.value) {
         input.value.focus()
@@ -186,9 +203,9 @@ export default function useMultiselect (props, context, dep)
     }
   }
 
-  const activate = () => {
-    if (disabled.value) {
-      return
+  const activate = (e) => {
+    if (disabled.value || isActive.value) {
+      return false
     }
     isActive.value = true
     // open()
@@ -212,6 +229,18 @@ export default function useMultiselect (props, context, dep)
     blur()
   }
 
+  const setMulti = ()=> {
+    multi.value = multiselect.value
+    multi.optionRows = optionRows
+  }
+
+  const getGombWidth = () => {
+    return (props.inputmode ? (addGomb.value.clientWidth ? addGomb.value.clientWidth : 0) : 0);
+  }
+
+  setMulti();
+
+
   return {
     multiselect,
     tabindex,
@@ -230,5 +259,7 @@ export default function useMultiselect (props, context, dep)
     options_container,
     optionRows,
     setScrollPosition,
+    addGomb,
+    updateDropPosition,
   }
 }

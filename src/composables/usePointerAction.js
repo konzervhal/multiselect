@@ -13,6 +13,7 @@ export default function usePointer (props, context, dep)
   const fg = dep.fg
   const handleOptionClick = dep.handleOptionClick
   const handleGroupClick = dep.handleGroupClick
+  const handleRemoveOption = dep.handleRemoveOption
   const search = dep.search
   const pointer = dep.pointer
   const setPointer = dep.setPointer
@@ -53,7 +54,7 @@ export default function usePointer (props, context, dep)
 
     return prevGroup
   })
-  
+
   const nextGroup = computed(() => {
     let nextIndex = groups.value.map(g => g.label).indexOf(isPointerGroup.value
       ? pointer.value[groupLabel.value]
@@ -69,7 +70,7 @@ export default function usePointer (props, context, dep)
   const lastGroup = computed(() => {
     return [...groups.value].slice(-1)[0]
   })
-  
+
   const currentGroupFirstEnabledOption = computed(() => {
     return pointer.value.__VISIBLE__.filter(o => !o.disabled)[0]
   })
@@ -78,7 +79,7 @@ export default function usePointer (props, context, dep)
     const options = currentGroup.value.__VISIBLE__.filter(o => !o.disabled)
     return options[options.map(o => o[valueProp.value]).indexOf(pointer.value[valueProp.value]) - 1]
   })
-  
+
   const currentGroupNextEnabledOption = computed(() => {
     const options = getParentGroup(pointer.value).__VISIBLE__.filter(o => !o.disabled)
     return options[options.map(o => o[valueProp.value]).indexOf(pointer.value[valueProp.value]) + 1]
@@ -207,7 +208,7 @@ export default function usePointer (props, context, dep)
     if (pointedOption.offsetTop + pointedOption.offsetHeight > wrapper.clientHeight + wrapper.scrollTop) {
       wrapper.scrollTop = pointedOption.offsetTop + pointedOption.offsetHeight - wrapper.clientHeight
     }
-    
+
     if (pointedOption.offsetTop < wrapper.scrollTop) {
       wrapper.scrollTop = pointedOption.offsetTop
     }

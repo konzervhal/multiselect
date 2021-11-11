@@ -47,7 +47,7 @@ export default function useClasses (props, context, dependencies)
     clear: 'multiselect-clear',
     clearIcon: 'multiselect-clear-icon',
     spinner: 'multiselect-spinner',
-    dropdown: 'multiselect-dropdown shadow',
+    dropdown: 'multiselect-dropdown dropdown-menu py-0 shadow',
     dropdownTop: 'is-top',
     dropdownHidden: 'is-hidden',
     options: 'multiselect-options',
@@ -63,9 +63,9 @@ export default function useClasses (props, context, dependencies)
     groupOptions: 'multiselect-group-options',
     option: 'multiselect-option dropdown-item',
     optionPointed: 'is-pointed',
-    optionSelected: 'is-selected',
+    optionSelected: 'active', // is-selected
     optionDisabled: 'is-disabled',
-    optionSelectedPointed: 'is-selected is-pointed',
+    optionSelectedPointed: 'active', //is-selected is-pointed
     optionSelectedDisabled: 'is-selected is-disabled',
     noOptions: 'multiselect-no-options',
     noResults: 'multiselect-no-results',
@@ -90,14 +90,6 @@ export default function useClasses (props, context, dependencies)
   })
 
   const classList = computed(() => {
-    console.log('..............................')
-    console.log('invalid:', invalid)
-    console.log('isAddOpen.value:', isAddOpen.value )
-    console.log('force_validate.value:', force_validate.value )
-    console.log('required:', required )
-    console.log('hasValid.value:', hasValid.value )
-    console.log('addValue.value:', addValue.value )
-    console.log('------------------------------')
     return {
       container: [classes.container]
         .concat(disabled.value ? classes.containerDisabled : [])

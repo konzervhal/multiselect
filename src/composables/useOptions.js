@@ -11,7 +11,7 @@ export default function useOptions (props, context, dep)
     appendNewTag, multipleLabel, object, loading, delay, resolveOnLoad,
     minChars, filterResults, clearOnSearch, clearOnSelect, valueProp,
     canDeselect, max, strict, closeOnSelect, groups: groupped, groupLabel,
-    groupOptions, groupHideEmpty, groupSelect,
+    groupOptions, groupHideEmpty, groupSelect, closeOnDeselect
   } = toRefs(props)
 
   // ============ DEPENDENCIES ============
@@ -26,6 +26,7 @@ export default function useOptions (props, context, dep)
   const blur = dep.blur
   const deactivate = dep.deactivate
   const multiselect = dep.multiselect
+  const updateDropPosition = dep.updateDropPosition
 
   // ================ DATA ================
 
@@ -38,6 +39,7 @@ export default function useOptions (props, context, dep)
   const ro = ref([])
 
   const resolving = ref(false)
+  const coSelect = ref(null)
 
   // ============== COMPUTED ==============
 
@@ -127,7 +129,7 @@ export default function useOptions (props, context, dep)
   const multipleLabelText = computed(() => {
     return multipleLabel !== undefined && multipleLabel.value !== undefined
       ? multipleLabel.value(iv.value)
-      : (iv.value && iv.value.length > 1 ? `${iv.value.length} elem kiválasztva` : `1 elem kiválasztva`)
+      : (iv.value && iv.value.length > 1 ? `${iv.value.length} elem kiválasztva` : iv.value[0].label)
   })
 
   const noOptions = computed(() => {
@@ -146,9 +148,10 @@ export default function useOptions (props, context, dep)
     }
 
     return getOptionByTrackBy(search.value) !== -1 ? [] : [{
-      [valueProp.value]: search.value,
+      [valueProp.value]: props.inputPrefix+search.value,
       [label.value]: search.value,
       [trackBy.value]: search.value,
+      ['additem']: true,
     }]
   })
 
@@ -201,7 +204,12 @@ export default function useOptions (props, context, dep)
 
       case 'multiple':
       case 'tags':
-        update((iv.value).concat(option))
+        update( Array.isArray(iv.value) ? (iv.value).concat(option) : ([iv.value]).concat(option))
+        if(mode.value === 'tags') {
+          nextTick(() => {
+            updateDropPosition()
+          })
+        }
         break
     }
 
@@ -223,6 +231,11 @@ export default function useOptions (props, context, dep)
         update(Array.isArray(option)
           ? iv.value.filter(v => option.map(o => o[valueProp.value]).indexOf(v[valueProp.value]) === -1)
           : iv.value.filter(v => v[valueProp.value] != option[valueProp.value]))
+        if(mode.value === 'tags') {
+          nextTick(() => {
+            updateDropPosition()
+          })
+        }
         break
     }
 
@@ -256,12 +269,23 @@ export default function useOptions (props, context, dep)
     deselect(option)
   }
 
+  const destroy = (option) => {
+    const idx = options.value.map((item, idx) => {
+      return item === option ? idx : -1
+    }).filter(item => item !== -1)
+    options.value.splice(idx[0], 1);
+  }
+
+  const handleRemoveOption = (option, e) => {
+    deselect(option)
+    destroy(option)
+  }
+
   const handleTagRemove = (option, e) => {
     if (e.button !== 0) {
       e.preventDefault()
       return
     }
-
     remove(option)
   }
 
@@ -307,6 +331,9 @@ export default function useOptions (props, context, dep)
         if (isSelected(option)) {
           if (canDeselect.value) {
             deselect(option)
+            if(closeOnDeselect.value) {
+              blur()
+            }
           }
           return
         }
@@ -338,7 +365,7 @@ export default function useOptions (props, context, dep)
         // If we need to close the dropdown on select we also need
         // to blur the input, otherwise further searches will not
         // display any options
-        if (closeOnSelect.value) {
+        if (coSelect.value) {
           blur()
         }
         break
@@ -376,13 +403,13 @@ export default function useOptions (props, context, dep)
         // If we need to close the dropdown on select we also need
         // to blur the input, otherwise further searches will not
         // display any options
-        if (closeOnSelect.value) {
+        if (coSelect.value) {
           blur()
         }
         break
     }
 
-    if (closeOnSelect.value) {
+    if (coSelect.value) {
       deactivate()
     }
   }
@@ -407,7 +434,7 @@ export default function useOptions (props, context, dep)
         break
     }
 
-    if (closeOnSelect.value) {
+    if (coSelect.value) {
       deactivate()
     }
   }
@@ -557,7 +584,12 @@ export default function useOptions (props, context, dep)
 
     // If external should be plain transform
     // value object to plain values
-    return mode.value === 'single' ? getOption(val) || {} : val.filter(v => !! getOption(v)).map(v => getOption(v))
+    if(mode.value === 'single') {
+    	return getOption(val) || {}
+    } else {
+    	const convert_val = (typeof val !== 'object')  ? [val] : val;
+    	return convert_val.filter(v => !! getOption(v)).map(v => getOption(v))
+    }
   }
 
   // ================ HOOKS ===============
@@ -624,12 +656,17 @@ export default function useOptions (props, context, dep)
 
       case 'multiple':
       case 'tags':
+      	iv.value = (Array.isArray(iv.value)) ? iv.value : [iv.value]
         if (!arraysEqual(object.value ? newValue.map(o => o[valueProp.value]) : newValue, iv.value.map(o => o[valueProp.value]))) {
           iv.value = makeInternal(newValue)
         }
         break
     }
   }, { deep: true })
+
+  watch(closeOnSelect, (newValue, oldValue) => {
+    coSelect.value = (mode.value === "single") ? true : newValue;
+  }, {deep: true, immediate: true})
 
   if (typeof props.options !== 'function') {
     watch(options, (n, o) => {
@@ -674,5 +711,6 @@ export default function useOptions (props, context, dep)
     refreshOptions,
     resolveOptions,
     hasValid,
+    handleRemoveOption,
   }
 }

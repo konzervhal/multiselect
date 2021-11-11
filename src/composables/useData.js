@@ -1,4 +1,4 @@
-import { toRefs } from 'composition-api'
+import { toRefs, nextTick } from 'composition-api'
 import isNullish from './../utils/isNullish'
 
 export default function useData (props, context, dep)
@@ -15,14 +15,14 @@ export default function useData (props, context, dep)
     // Setting object(s) as internal value
     iv.value = makeInternal(val)
 
-    // Setting object(s) or plain value as external 
+    // Setting object(s) or plain value as external
     // value based on `option` setting
     const externalVal = makeExternal(val)
 
     context.emit('change', externalVal)
     context.emit('input', externalVal)
     context.emit('update:modelValue', externalVal)
-  } 
+  }
 
   // no export
   const makeExternal = (val) => {

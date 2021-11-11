@@ -18,6 +18,8 @@ export default function useKeyboard (props, context, dep)
   const forwardPointer = dep.forwardPointer
   const blur = dep.blur
   const fo = dep.fo
+  const isAddOpen = dep.isAddOpen
+  const multiselect = dep.multiselect
 
   // =============== METHODS ==============
 
@@ -25,7 +27,7 @@ export default function useKeyboard (props, context, dep)
   const preparePointer = () => {
     // When options are hidden and creating tags is allowed
     // no pointer will be set (because options are hidden).
-    // In such case we need to set the pointer manually to the 
+    // In such case we need to set the pointer manually to the
     // first option, which equals to the option created from
     // the search value.
     if (mode.value === 'tags' && !showOptions.value && createTag.value && searchable.value && !groupped.value) {
@@ -34,6 +36,7 @@ export default function useKeyboard (props, context, dep)
   }
 
   const handleKeydown = (e) => {
+
     switch (e.keyCode) {
       // backspace
       case 8:
@@ -48,7 +51,9 @@ export default function useKeyboard (props, context, dep)
         if (iv.value.length === 0) {
           return
         }
-        
+
+        if(isAddOpen) return
+
         update([...iv.value].slice(0,-1))
         break
 
@@ -59,13 +64,15 @@ export default function useKeyboard (props, context, dep)
         if (mode.value === 'tags' && addTagOn.value.indexOf('enter') === -1 && createTag.value) {
           return
         }
-        
+
         preparePointer()
         selectPointer()
         break
 
       // space
       case 32:
+        if(isAddOpen) return
+
         if (searchable.value && mode.value !== 'tags' && !createTag.value) {
           return
         }
@@ -75,11 +82,11 @@ export default function useKeyboard (props, context, dep)
         }
 
         e.preventDefault()
-        
+
         preparePointer()
         selectPointer()
         break
-      
+
       // tab
       // semicolon
       // comma

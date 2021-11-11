@@ -8,52 +8,18 @@ export default function useAdd (props, context, dependencies)
   const select = dependencies.select
   const update = dependencies.update
   const isAddOpen = dependencies.isAddOpen
+  const isSelected = dependencies.isSelected
 
   // ================ DATA ================
 
   const add = ref(null)
-  // const isOpen = ref(false)
   const addinput = ref(null)
-
-  // ============== COMPUTED ==============
-
-  // const tagsSearchWidth = computed(() => {
-  //   if (search.value) {
-  //     return `${search.value.length}ch`
-  //   }
-
-  //   if (mode.value !== 'tags' || [null, undefined].indexOf(internalValue.value) !== -1 || !internalValue.value.length) {
-  //     return '100%'
-  //   }
-
-  //   return '1ch'
-  // // })
-  // const isAddOpen = computed(() => {
-  //   return isOpen.value;
-  // })
-
+  const selectedItems = ref([])
 
   // =============== METHODS ==============
 
-  // const clearSearch = () => {
-  //   search.value = ''
-  // }
-
-  // const focusSearch = () => {
-  //   input.value.focus()
-  // }
-
-  // const blurAdd = () => {
-  //   nextTick(()=>{
-  //     add.value = ''
-  //     isOpen.value = false
-  //     addinput.value.blur()
-  //   })
-  // }
-
   const openAdd = () => {
     if(!isAddOpen.value) {
-      // isOpen.value = true;
       isAddOpen.value = true;
       add.value = '';
       nextTick(()=>{
@@ -61,7 +27,6 @@ export default function useAdd (props, context, dependencies)
       })
     } else {
       saveAdd()
-      // isOpen.value = false;
       isAddOpen.value = false;
     }
   }
@@ -72,17 +37,18 @@ export default function useAdd (props, context, dependencies)
     }
 
     const isAlready = checkAlready(add.value)
-    if(isAlready) {
-      update(isAlready)
-      select(isAlready)
+    if(isAlready.value) {
+      if(!isSelected(isAlready)) {
+        select(isAlready.value)
+      }
       return
     }
 
-    let val = {'value': props.inputPrefix+add.value, 'label': add.value};
+    let val = {'value': props.inputPrefix+add.value, 'label': add.value, additem: true};
     options.value.unshift(val);
+
     nextTick(()=>{
-      update(val)
-      select(val)
+        select(val)
     })
   }
 
@@ -90,28 +56,17 @@ export default function useAdd (props, context, dependencies)
     let isAlready = false;
     options.value.forEach((item) => {
       if(item.label === value) {
-        isAlready = item.value;
+        isAlready = item;
         return;
       }
     })
     return isAlready;
   }
 
-  // ============== WATCHERS ==============
-
-  // watch(search, (val) => {
-  //   context.emit('search-change', val)
-  // })
-
   return {
     add,
     isAddOpen,
     openAdd,
     addinput,
-    // blurAdd,
-    // tagsSearchWidth,
-    // clearSearch,
-    // focusSearch,
-    // blurSearch,
   }
 }

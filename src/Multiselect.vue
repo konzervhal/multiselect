@@ -6,6 +6,7 @@
     :class="classList.container"
     :id="id"
     @focusin="activate"
+    @click="activate"
     @focusout="deactivate"
     @keydown="handleKeydown"
     @focus="handleFocus"
@@ -132,100 +133,110 @@
           tabindex="-1"
           ref="optionRows"
         >
-          <div class="multiselect-select-all" v-if="isSelectAll && mode !== 'single'" @click.stop.prevent @mousedown.prevent>
-            <div class="position-absolute selectall-button-container text-center">
-                <div class="row g-0">
-                  <div class="col-6">
-                    <div class="p-2 text-truncate" @click.stop.prevent="selectAll" @mousedown.prevent :class="{
-                        'bg-light':!isAll,
-                        'text-white':isAll,
-                        'bg-secondary':isAll,
-                      }">
-                      <i class="mdi mdi-check"></i> Mind kijelölése
+          <div class="position-relative">
+            <div class="multiselect-select-all" v-if="isSelectAll && mode !== 'single'" @click.stop.prevent @mousedown.prevent>
+              <div class="position-absolute selectall-button-container text-center">
+                  <div class="row g-0">
+                    <div class="col-6">
+                      <div class="p-2 text-truncate" @click.stop.prevent="selectAll" @mousedown.prevent :class="{
+                          'selectall-check-all':!isAll,
+                          'selectall-check-none':isAll,
+                        }">
+                        <i class="mdi mdi-check"></i> Mind kijelölése
+                      </div>
                     </div>
-                  </div>
-                   <div class="col-6">
-                     <div class="p-2 text-truncate" @click.stop.prevent="deselectAll" @mousedown.prevent :class="{
-                        'bg-light':!isClearAll,
-                        'text-white':isClearAll,
-                        'bg-secondary':isClearAll,
-                      }">
-                      <i class="mdi mdi-close"></i> Egyik sem
+                     <div class="col-6">
+                       <div class="p-2 text-truncate" @click.stop.prevent="deselectAll" @mousedown.prevent :class="{
+                          'selectall-check-all':!isClearAll,
+                          'selectall-check-none':isClearAll,
+                        }">
+                        <i class="mdi mdi-close"></i> Egyik sem
+                       </div>
                      </div>
-                   </div>
-                </div>
-            </div>
-          </div>
-
-          <perfect-scrollbar class="d-flex flex-column flex-fill" :style="{maxHeight: scrollMaxHeight}">
-            <slot name="beforelist" :options="fo"></slot>
-
-            <ul :class="classList.options">
-              <template v-if="groups">
-                <li
-                  v-for="(group, i, key) in fg"
-                  :class="classList.group"
-                  :key="key"
-                >
-                  <div
-                    :class="classList.groupLabel(group)"
-                    :data-pointed="isPointed(group)"
-                    @mousedown.prevent
-                    @mouseenter="setPointer(group)"
-                    @click.stop.prevent="handleGroupClick(group)"
-                  >
-                    <slot name="grouplabel" :group="group">
-                      <span>{{ group[groupLabel] }}</span>
-                    </slot>
                   </div>
+              </div>
+            </div>
 
-                  <ul :class="classList.groupOptions">
-                    <li
-                      v-for="(option, i, key) in group.__VISIBLE__"
-                      :class="classList.option(option, group)"
-                      :key="key"
+            <perfect-scrollbar class="d-flex flex-column flex-fill" :style="{maxHeight: scrollMaxHeight}">
+              <slot name="beforelist" :options="fo"></slot>
+
+              <ul :class="classList.options">
+                <template v-if="groups">
+                  <li
+                    v-for="(group, i, key) in fg"
+                    :class="classList.group"
+                    :key="key"
+                  >
+                    <div
+                      :class="classList.groupLabel(group)"
+                      :data-pointed="isPointed(group)"
                       @mousedown.prevent
-                      :data-pointed="isPointed(option)"
-                      @mouseenter="setPointer(option)"
-                      @click.stop.prevent="handleOptionClick(option)"
+                      @mouseenter="setPointer(group)"
+                      @click.stop.prevent="handleGroupClick(group)"
                     >
-                      <slot name="option" :option="option" :search="search">
-                        <span>{{ option[label] }}</span>
+                      <slot name="grouplabel" :group="group">
+                        <span>{{ group[groupLabel] }}</span>
                       </slot>
-                    </li>
-                  </ul>
-                </li>
-              </template>
-              <template v-else>
-                <li
-                  v-for="(option, i, key) in fo"
-                  :class="classList.option(option)"
-                  :key="key"
-                  @mousedown.prevent
-                  :data-pointed="isPointed(option)"
-                  @mouseenter="setPointer(option)"
-                  @click.stop.prevent="handleOptionClick(option)"
-                >
-                  <slot name="option" :option="option" :search="search">
-                    <span>{{ option[label] }}</span>
-                  </slot>
-                </li>
-              </template>
-            </ul>
+                    </div>
 
-            <slot v-if="noOptions" name="nooptions">
-              <div :class="classList.noOptions" v-html="noOptionsText"></div>
-            </slot>
+                    <ul :class="classList.groupOptions">
+                      <li
+                        v-for="(option, i, key) in group.__VISIBLE__"
+                        :class="classList.option(option, group)"
+                        :key="key"
+                        @mousedown.prevent
+                        :data-pointed="isPointed(option)"
+                        @mouseenter="setPointer(option)"
+                        @click.stop.prevent="handleOptionClick(option)"
+                      >
+                        <slot name="option" :option="option" :search="search">
+                          <span class="d-flex w-100">
+                            <span class="flex-grow-1 text-truncate">{{ option[label] }}</span>
+                            <span class="pe-2" v-if="option.additem" @click.stop.prevent="handleRemoveOption(option, $event)">
+                              <span class="rounded-circle remove-option bg-danger d-flex justify-content-center text-white"><i class="mdi mdi-trash-can"></i></span>
+                            </span>
+                          </span>
+                        </slot>
+                      </li>
+                    </ul>
+                  </li>
+                </template>
+                <template v-else>
+                  <li
+                    v-for="(option, i, key) in fo"
+                    :class="classList.option(option)"
+                    :key="key"
+                    @mousedown.prevent
+                    :data-pointed="isPointed(option)"
+                    @mouseenter="setPointer(option)"
+                    @click.stop.prevent="handleOptionClick(option)"
+                  >
+                    <slot name="option" :option="option" :search="search">
+                      <span class="d-flex w-100">
+                        <span class="flex-grow-1 text-truncate">{{ option[label] }}</span>
+                        <span class="pe-2" v-if="option.additem" @click.stop.prevent="handleRemoveOption(option, $event)">
+                          <span class="rounded-circle remove-option bg-danger d-flex justify-content-center text-white"><i class="mdi mdi-trash-can"></i></span>
+                        </span>
+                      </span>
+                    </slot>
+                  </li>
+                </template>
+              </ul>
 
-            <slot v-if="noResults" name="noresults">
-              <div :class="classList.noResults" v-html="noResultsText"></div>
-            </slot>
+              <slot v-if="noOptions" name="nooptions">
+                <div :class="classList.noOptions" v-html="noOptionsText"></div>
+              </slot>
 
-            <slot name="afterlist" :options="fo"></slot>
-          </perfect-scrollbar>
+              <slot v-if="noResults" name="noresults">
+                <div :class="classList.noResults" v-html="noResultsText"></div>
+              </slot>
 
-          <div class="multiselect-close-all d-flex align-items-center bg-light cursor-pointer" v-if="mode !== 'single'">
-            <div class="text-center closeall-button-container col-12"><i class="mdi mdi-playlist-check"></i> Kész</div>
+              <slot name="afterlist" :options="fo"></slot>
+            </perfect-scrollbar>
+
+            <div class="multiselect-close-all d-flex align-items-center selectall-check-all cursor-pointer" v-if="mode !== 'single'">
+              <div class="text-center closeall-button-container col-12"><i class="mdi mdi-playlist-check"></i> Kész</div>
+            </div>
           </div>
         </div>
             </div>
@@ -245,7 +256,7 @@
         <div :class="classList.spacer"></div>
       </div>
       <!-- add open button -->
-      <div v-if="inputmode && !disabled" :class="classList.addButton"
+      <div v-if="inputmode && mode !== 'tags' && !disabled" :class="classList.addButton" ref="addGomb"
         @click.prevent="openAdd"><i :class="classList.addButtonIcon"></i>
       </div>
     </div>
@@ -538,6 +549,19 @@
       inputPrefix: {
         type:String,
         default: "new_"
+      },
+      mask: {
+        type: Object,
+        default: {mask: 'F*', tokens: {'F': {pattern: /./}}},
+      },
+      InputModeFieldValidate: {
+        type:Function,
+        default:(value)=>{ return value}
+      },
+      closeOnDeselect: {
+        type: Boolean,
+        required: false,
+        default: true,
       }
     },
     watch: {
@@ -582,7 +606,7 @@
         }
       },
     },
-     methods: {
+    methods: {
       ErrorMessage(valid) {
         this.ManageMessage(valid, this.error_name)
       },
@@ -598,7 +622,7 @@
           } else {
             delete this.validation_error.form_errors[this.error_point_name][e_name.name];
           }
-      },
+      }
     },
     computed:{
       error_name() {
@@ -621,6 +645,9 @@
           valid = false;
         }
         return valid;
+      },
+      GetCustomMask() {
+          return {...this.mask, ...{customvalidate: {postvalidate: this.InputModeFieldValidate}}}
       }
     },
     created() {
@@ -631,17 +658,15 @@
     },
     setup(props, context)
     {
+      const multi = ref(false)
       const force_validate = inject('force_validate', false)
       const validation_error = inject('validation_error')
       const value = useValue(props, context)
-      const search = useSearch(props, context)
       const dropdown = useDropdown(props, context)
+      const search = useSearch(props, context, {multiselect: multi, dropdown: dropdown})
       const pointer = usePointer(props, context)
       const isAddOpen = ref(false)
 
-      const data = useData(props, context, {
-        iv: value.iv,
-      })
 
       const multiselect = useMultiselect(props, context, {
         input: search.input,
@@ -649,7 +674,12 @@
         open: dropdown.open,
         close: dropdown.close,
         isOpen: dropdown.isOpen,
-        isAddOpen: isAddOpen
+        isAddOpen: isAddOpen,
+        multi: multi,
+      })
+
+      const data = useData(props, context, {
+        iv: value.iv,
       })
 
       const options = useOptions(props, context, {
@@ -663,11 +693,13 @@
         blur: multiselect.blur,
         deactivate: multiselect.deactivate,
         multiselect: multiselect.multiselect,
+        updateDropPosition: multiselect.updateDropPosition,
       })
 
       const add = useAdd(props, context, {
         update: data.update,
         select: options.select,
+        isSelected: options.isSelected,
         isAddOpen: isAddOpen,
       })
 
@@ -693,6 +725,8 @@
         forwardPointer: pointerAction.forwardPointer,
         blur: multiselect.blur,
         fo: options.fo,
+        isAddOpen: isAddOpen,
+        multiselect: multiselect.multiselect,
       })
 
       const classes = useClasses(props, context, {
