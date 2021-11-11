@@ -596,7 +596,8 @@
         }
       },
       required:{
-        handler: function(){
+        handler: function(newval){
+            this.isRequired = newval;
             this.ErrorMessage(this.is_valid);
         },immediate: true
       },
@@ -743,7 +744,6 @@
         isAddOpen: isAddOpen,
         hasValid: options.hasValid,
         force_validate: force_validate,
-        required: props.required,
         addValue: add.add
       })
 
