@@ -576,11 +576,7 @@
       },
       invalid:{
         handler: function(newval){
-          console.log("newval",newval)
-          console.log("type newval",typeof newval)
-          console.log("isinvalid",this.isInvalid)
           this.isInvalid = newval;
-          console.log("ezlett  isinvalid : ",this.isInvalid)
           this.ErrorMessage(this.is_valid);
         }
       },
