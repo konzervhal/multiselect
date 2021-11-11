@@ -1,10 +1,13 @@
-import { computed, toRefs, inject } from 'composition-api'
+import { computed, toRefs, inject, ref} from 'composition-api'
 
 export default function useClasses (props, context, dependencies)
 {
   const refs = toRefs(props)
   const { disabled, openDirection, showOptions } = refs
 
+ // ================ DATA ================
+
+  const isInvalid = ref(false)
 
   // ============ DEPENDENCIES ============
 
@@ -96,8 +99,8 @@ export default function useClasses (props, context, dependencies)
         .concat(showDropdown.value && openDirection.value === 'top'  ? classes.containerOpenTop : [])
         .concat(showDropdown.value && openDirection.value !== 'top' ? classes.containerOpen : [])
         .concat(isActive.value ? classes.containerActive : [])
-        .concat((invalid || (isAddOpen.value && force_validate.value && !addValue.value) || ( force_validate.value && required && !hasValid.value )) ? classes.invalid : [])
-        .concat( (force_validate.value && (!invalid && (!required || hasValid.value))) ? classes.valid : [])
+        .concat((isInvalid.value || (isAddOpen.value && force_validate.value && !addValue.value) || ( force_validate.value && required && !hasValid.value )) ? classes.invalid : [])
+        .concat( (force_validate.value && (!isInvalid.value && (!required || hasValid.value))) ? classes.valid : [])
         .concat(isAddOpen.value ? classes.addMode : []),
       spacer: classes.spacer,
       singleLabel: classes.singleLabel,
@@ -167,5 +170,6 @@ export default function useClasses (props, context, dependencies)
   return {
     classList,
     showDropdown,
+    isInvalid
   }
 }

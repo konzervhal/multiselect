@@ -576,6 +576,11 @@
       },
       invalid:{
         handler: function(newval){
+          console.log("newval",newval)
+          console.log("type newval",typeof newval)
+          console.log("isinvalid",this.isInvalid)
+          this.isInvalid = newval;
+          console.log("ezlett  isinvalid : ",this.isInvalid)
           this.ErrorMessage(this.is_valid);
         }
       },
@@ -602,7 +607,8 @@
       //ha menet közben változik az inputmode, fixen csukódjon be a hozzáadás lehetőség.
       inputmode:{
         handler: function(){
-          this.isOpen.value = false;
+          this.isOpen = false;
+          this.isAddOpen = false;
         }
       },
     },
@@ -739,7 +745,6 @@
         resolving: options.resolving,
         fo: options.fo,
         isAddOpen: isAddOpen,
-        invalid: props.invalid,
         hasValid: options.hasValid,
         force_validate: force_validate,
         required: props.required,
