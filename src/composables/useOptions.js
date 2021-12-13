@@ -524,6 +524,9 @@ export default function useOptions (props, context, dep)
   const initInternalValue = () => {
     if (!isNullish(ev.value)) {
       iv.value = makeInternal(ev.value)
+      if(!iv.value.value){
+        update(null)
+      }
     }
   }
 
@@ -548,7 +551,9 @@ export default function useOptions (props, context, dep)
     }
 
     if (mode.value === 'single') {
-      let newLabel = getOption(iv.value[valueProp.value])[label.value]
+      const op = getOption(iv.value[valueProp.value]);
+
+      let newLabel = (op) ? op[label.value] : null
 
       iv.value[label.value] = newLabel
 
@@ -557,7 +562,10 @@ export default function useOptions (props, context, dep)
       }
     } else {
       iv.value.forEach((val, i) => {
-        let newLabel = getOption(iv.value[i][valueProp.value])[label.value]
+
+        const op = getOption(iv.value[i][valueProp.value]);
+
+        let newLabel = (op) ? op[label.value] : null
 
         iv.value[i][label.value] = newLabel
 

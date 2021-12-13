@@ -147,7 +147,9 @@ export default function useMultiselect (props, context, dep)
   const closeDropdown = (e) => {
     if(props.container === 'body') {
       document.removeEventListener('scroll', setScrollPosition, true)
-      options_container.value.append(optionRows.value)
+      if(options_container.value) {
+        options_container.value.append(optionRows.value)
+      }
     }
 
     let d = multiselect.value.querySelector('.multiselect-dropdown')
