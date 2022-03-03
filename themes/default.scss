@@ -34,6 +34,12 @@
   }
 }
 
+html.dark .multiselect {
+   &.is-disabled{background-color: var(--bs-gray-900-alt)}
+}
+
+  html.dark .multiselect .multiselect-placeholder{opacity: .35;}
+
 .multiselect-multiple-label,
 .multiselect-single-label,
 .multiselect-placeholder {
