@@ -1,7 +1,6 @@
 import { ref, toRefs, computed, refs, nextTick, watch } from 'composition-api'
 
-export default function useMultiselect (props, context, dep)
-{
+export default function useMultiselect (props, context, dep){
   const { searchable, disabled, isSelectAll, maxHeight } = toRefs(props)
 
   // ============ DEPENDENCIES ============

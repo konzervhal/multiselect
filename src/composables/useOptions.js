@@ -524,7 +524,7 @@ export default function useOptions (props, context, dep)
   const initInternalValue = () => {
     if (!isNullish(ev.value)) {
       iv.value = makeInternal(ev.value)
-      if(!iv.value.value){
+      if(isNullish(iv.value.value)){
         update(null)
       }
     }
