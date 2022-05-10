@@ -657,6 +657,7 @@
       window.addEventListener("resize", this.resize);
     },
     unmounted() {
+      delete this.validation_error.form_errors[this.error_point_name][this.error_name.name];
       window.removeEventListener("resize", this.resize);
     },
     setup(props, context)
