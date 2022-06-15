@@ -11,7 +11,9 @@
     @keydown="handleKeydown"
     @focus="handleFocus"
     :error_message_name="error_message_name"
+    :error_message_index="error_message_index"
     :add_error_message_name="add_error_message_name"
+    :add_error_message_index="add_error_message_index"
   >
         <!-- Search -->
         <template v-if="mode !== 'tags' && searchable && !disabled  && !isAddOpen">
@@ -525,10 +527,18 @@
         type:Boolean,
         default: false
       },
+      error_message_index:{
+            type: String,
+            default: ''
+        },
       error_message_name: {
         type:String,
         default:''
       },
+      add_error_message_index:{
+            type: String,
+            default: ''
+        },
       add_error_message_name: {
         type:String,
         default:''
@@ -611,10 +621,10 @@
     },
     methods: {
       ErrorMessage(valid) {
-        this.ManageMessage(valid, this.error_name)
+        this.ManageMessage(valid, this.GetErrorMessageName(this.error_message_name, this.error_name_index ? this.error_name_index : this.error_message_name))
       },
       AddErrorMessage(valid){
-        this.ManageMessage(valid, this.add_error_name)
+        this.ManageMessage(valid, this.GetErrorMessageName(this.add_error_message, this.add_error_name_index ? this.add_error_name_index : this.add_error_message,true))
       },
       ManageMessage(valid, e_name){
           if( typeof this.validation_error.form_errors[this.error_point_name] === "undefined") {
@@ -625,23 +635,31 @@
           } else {
             delete this.validation_error.form_errors[this.error_point_name][e_name.name];
           }
-      }
+      },
+      GetErrorMessageName(message, index,is_add_error = false) {
+            if (message === "") {
+            	if(is_add_error){
+					return {
+	                    name: 'fields.error_messages.select_field_add_error_'+this.rand_error_num,
+	                    value: 'fields.error_messages.select_field_add_error'
+	                }; // alltalanos hibaszoveg
+            	}else{
+	                return {
+	                    name: 'fields.error_messages.select_field_error_'+this.rand_error_num,
+	                    value: 'fields.error_messages.select_field_error'
+	                }; // alltalanos hibaszoveg
+            	}
+            }
+            return {name: index, value: message}; // spec vezerelt hibaszoveg
+        },
     },
     computed:{
-      error_name() {
-        if(this.error_message_name === '') {
-          return {'name': "error_messages.select_field_error_"+this.rand_error_num, 'value': 'error_messages.select_field_error'}
-        } else {
-          return {name: this.error_message_name, value: this.error_message_name}
-        }
-      },
-      add_error_name() {
-        if(this.add_error_message_name === '') {
-          return {'name': "error_messages.select_field_add_error_"+this.rand_error_num, 'value': 'error_messages.select_field_add_error'}
-        } else {
-          return {name: this.add_error_message_name, value: this.add_error_message_name}
-        }
-      },
+    	ErrorName() {
+            return this.GetErrorMessageName(this.error_message_name, this.error_message_index ? this.error_message_index : this.error_message_name)
+        },
+        AddErrorName(){
+        	return this.GetErrorMessageName(this.add_error_message_name, this.add_error_message_index ? this.add_error_message_index : this.add_error_message_name, true)
+        },
       is_valid(){
         let valid = true;
         if(this.invalid || this.isAddOpen || this.required && !this.hasValid ){
@@ -657,7 +675,8 @@
       window.addEventListener("resize", this.resize);
     },
     unmounted() {
-      delete this.validation_error.form_errors[this.error_point_name][this.error_name.name];
+      delete this.validation_error.form_errors[this.error_point_name][this.ErrorName.name];
+      delete this.validation_error.form_errors[this.error_point_name][this.AddErrorName.name];
       window.removeEventListener("resize", this.resize);
     },
     setup(props, context)
