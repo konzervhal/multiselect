@@ -660,7 +660,6 @@
 	                }; // alltalanos hibaszoveg
             	}
             }
-            console.log("index",index)
             return {name: index, value: message}; // spec vezerelt hibaszoveg
         },
     },
@@ -687,7 +686,6 @@
     },
     unmounted() {
       delete this.validation_error.form_errors[this.error_point_name][this.ErrorName.name];
-      console.log("töröl",this.validation_error.form_errors[this.error_point_name])
       delete this.validation_error.form_errors[this.error_point_name][this.AddErrorName.name];
       window.removeEventListener("resize", this.resize);
     },
