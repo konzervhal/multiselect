@@ -600,6 +600,16 @@
             this.ErrorMessage(this.is_valid);
         }
       },
+      // error_message_index:{
+      //   handler: function(newval){
+      //       if(newval){
+      //         if(this.validation_error.form_errors[this.error_point_name][this.error_message_name]){
+      //           delete this.validation_error.form_errors[this.error_point_name][this.error_message_name];
+      //         }
+      //         this.ErrorMessage(this.is_valid);
+      //       }
+      //   },immediate: true
+      // },
       add_error_message_name: {
         handler: function(value) {
           this.AddErrorMessage(!this.isAddOpen)
@@ -621,10 +631,10 @@
     },
     methods: {
       ErrorMessage(valid) {
-        this.ManageMessage(valid, this.GetErrorMessageName(this.error_message_name, this.error_name_index ? this.error_name_index : this.error_message_name))
+        this.ManageMessage(valid, this.GetErrorMessageName(this.error_message_name, this.error_message_index ? this.error_message_index : this.error_message_name))
       },
       AddErrorMessage(valid){
-        this.ManageMessage(valid, this.GetErrorMessageName(this.add_error_message, this.add_error_name_index ? this.add_error_name_index : this.add_error_message,true))
+        this.ManageMessage(valid, this.GetErrorMessageName(this.add_error_message, this.add_error_message_index ? this.add_error_message_index : this.add_error_message,true))
       },
       ManageMessage(valid, e_name){
           if( typeof this.validation_error.form_errors[this.error_point_name] === "undefined") {
@@ -639,10 +649,10 @@
       GetErrorMessageName(message, index,is_add_error = false) {
             if (message === "") {
             	if(is_add_error){
-					return {
-	                    name: 'fields.error_messages.select_field_add_error_'+this.rand_error_num,
-	                    value: 'fields.error_messages.select_field_add_error'
-	                }; // alltalanos hibaszoveg
+      					return {
+    	                    name: 'fields.error_messages.select_field_add_error_'+this.rand_error_num,
+    	                    value: 'fields.error_messages.select_field_add_error'
+      	                }; // alltalanos hibaszoveg
             	}else{
 	                return {
 	                    name: 'fields.error_messages.select_field_error_'+this.rand_error_num,
@@ -650,6 +660,7 @@
 	                }; // alltalanos hibaszoveg
             	}
             }
+            console.log("index",index)
             return {name: index, value: message}; // spec vezerelt hibaszoveg
         },
     },
@@ -676,6 +687,7 @@
     },
     unmounted() {
       delete this.validation_error.form_errors[this.error_point_name][this.ErrorName.name];
+      console.log("töröl",this.validation_error.form_errors[this.error_point_name])
       delete this.validation_error.form_errors[this.error_point_name][this.AddErrorName.name];
       window.removeEventListener("resize", this.resize);
     },
