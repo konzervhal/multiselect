@@ -684,6 +684,9 @@
     created() {
       window.addEventListener("resize", this.resize);
     },
+    beforeUnmount(){
+      this.closeDropdown()
+    },
     unmounted() {
       delete this.validation_error.form_errors[this.error_point_name][this.ErrorName.name];
       delete this.validation_error.form_errors[this.error_point_name][this.AddErrorName.name];
