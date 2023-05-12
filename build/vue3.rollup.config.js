@@ -1,4 +1,4 @@
-import vue from 'vue-next-rollup-plugin-vue'
+import vue from 'rollup-plugin-vue'
 import alias from '@rollup/plugin-alias'
 import babel from '@rollup/plugin-babel'
 import { terser } from 'rollup-plugin-terser'
