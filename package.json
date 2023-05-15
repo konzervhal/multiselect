@@ -3,44 +3,9 @@
   "version": "2.6.2",
   "private": false,
   "description": "Vue 3 multiselect component with single select, multiselect and tagging options.",
-  "license": "MIT",
   "author": "Adam Berecz <adam@vueform.com>",
   "main": "./dist/multiselect.js",
-  "types": "./src/index.d.ts",
-  "module": "./dist/multiselect.mjs",
-  "unpkg": "./dist/multiselect.global.js",
-  "jsdelivr": "./dist/multiselect.global.js",
   "style": "./themes/default.css",
-  "exports": {
-    ".": {
-      "types": "./src/index.d.ts",
-      "node": {
-        "import": {
-          "production": "./dist/multiselect.mjs",
-          "development": "./dist/multiselect.mjs",
-          "default": "./dist/multiselect.mjs"
-        },
-        "require": {
-          "production": "./dist/multiselect.js",
-          "development": "./dist/multiselect.js",
-          "default": "./dist/multiselect.js"
-        }
-      },
-      "import": "./dist/multiselect.mjs",
-      "require": "./dist/multiselect.js"
-    },
-    "./src/*": "./src/*",
-    "./dist/*": "./dist/*",
-    "./themes/*": "./themes/*",
-    "./package.json": "./package.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vueform/multiselect.git"
-  },
-  "bugs": {
-    "url": "https://github.com/vueform/multiselect/issues"
-  },
   "scripts": {
     "build": "npm run build:vue3 & npm run build:themes",
     "build:vue3": "rollup --config build/vue3.rollup.config.js",
@@ -63,11 +28,6 @@
     "typescript": "^5.0.4",
     "vue": "^3.2.20"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ],
   "dependencies": {
     "maska": "^2.1.3"
   }
