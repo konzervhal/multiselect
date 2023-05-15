@@ -21,7 +21,7 @@ export default [
           { find: 'composition-api', replacement: 'vue' },
         ]
       }),
-      terser(),
+      terser()
     ],
     external: 'vue',
   },

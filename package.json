@@ -3,9 +3,17 @@
   "version": "2.6.2",
   "private": false,
   "description": "Vue 3 multiselect component with single select, multiselect and tagging options.",
+  "license": "MIT",
   "author": "Adam Berecz <adam@vueform.com>",
   "main": "./dist/multiselect.js",
   "style": "./themes/default.css",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vueform/multiselect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vueform/multiselect/issues"
+  },
   "scripts": {
     "build": "npm run build:vue3 & npm run build:themes",
     "build:vue3": "rollup --config build/vue3.rollup.config.js",
@@ -13,14 +21,14 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.12.10",
-    "@rollup/plugin-alias": "^3.1.1",
-    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-alias": "^5.0.0",
+    "@rollup/plugin-babel": "^6.0.3",
     "autoprefixer": "^10.4.14",
     "babel-plugin-rename-umd-globals": "^1.0.0",
     "flush-promises": "^1.0.2",
-    "fraction.js": "^4.1.1",
+    "fraction.js": "^4.2.0",
     "node-sass": "^8.0.0",
-    "postcss": "^8.2.1",
+    "postcss": "^8.4.23",
     "rollup": "^2.34.2",
     "rollup-plugin-postcss": "^4.0.2",
     "@rollup/plugin-terser": "^0.4.1",
@@ -28,6 +36,11 @@
     "typescript": "^5.0.4",
     "vue": "^3.2.20"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "dependencies": {
     "maska": "^2.1.3"
   }
