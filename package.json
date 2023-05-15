@@ -1,16 +1,9 @@
 {
-  "name": "@vueform/multiselect",
+  "name": "zrm-multiselect",
   "version": "2.6.3",
   "description": "Vue 3 multiselect component with single select, multiselect and tagging options.",
   "main": "./dist/multiselect.js",
   "style": "./themes/default.css",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vueform/multiselect.git"
-  },
-  "bugs": {
-    "url": "https://github.com/vueform/multiselect/issues"
-  },
   "scripts": {
     "build": "npm run build:vue3 & npm run build:themes",
     "build:vue3": "rollup --config build/vue3.rollup.config.js",
