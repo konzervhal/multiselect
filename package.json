@@ -20,16 +20,14 @@
     "flush-promises": "^1.0.2",
     "fraction.js": "^4.2.0",
     "sass": "^1.62.1",
-    "postcss": "^8.4.23",
     "rollup": "^2.34.2",
-    "rollup-plugin-sass": "^1.12.19",
     "@rollup/plugin-terser": "^0.4.1",
     "rollup-plugin-vue": "^6.0.0",
     "typescript": "^5.0.4",
     "vue": "^3.2.20",
     "clean-css-cli": "^5.4.1"
   },
-  "peerDependencies": {
+  "dependencies": {
     "maska": "^2.1.3"
   }
 }
