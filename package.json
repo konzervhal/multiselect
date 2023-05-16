@@ -3,11 +3,13 @@
   "version": "2.6.3",
   "description": "Vue 3 multiselect component with single select, multiselect and tagging options.",
   "main": "./dist/multiselect.js",
-  "style": "./themes/default.css",
+  "style": "./themes/default.min.css",
   "scripts": {
-    "build": "npm run build:vue3 & npm run build:themes",
+    "build": "npm run build:vue3 & npm run css",
     "build:vue3": "rollup --config build/vue3.rollup.config.js",
-    "build:themes": "rollup --config build/themes.rollup.config.js"
+    "css": "npm run themes & npm run css-default",
+    "themes": "sass --style expanded --source-map --embed-sources --no-error-css --load-path=themes themes:dist/css/",
+    "css-default": "cleancss -O1 --format breakWith=lf --output themes/default.min.css dist/css/default.css"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.12.10",
@@ -17,14 +19,15 @@
     "babel-plugin-rename-umd-globals": "^1.0.0",
     "flush-promises": "^1.0.2",
     "fraction.js": "^4.2.0",
-    "node-sass": "^8.0.0",
+    "sass": "^1.62.1",
     "postcss": "^8.4.23",
     "rollup": "^2.34.2",
-    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-sass": "^1.12.19",
     "@rollup/plugin-terser": "^0.4.1",
     "rollup-plugin-vue": "^6.0.0",
     "typescript": "^5.0.4",
-    "vue": "^3.2.20"
+    "vue": "^3.2.20",
+    "clean-css-cli": "^5.4.1"
   },
   "peerDependencies": {
     "maska": "^2.1.3"
