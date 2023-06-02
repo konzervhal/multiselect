@@ -277,9 +277,13 @@
   import useClasses from './composables/useClasses'
   import useAdd from './composables/useAdd'
   import {inject, ref, provide, reactive} from 'vue'
-
+  import {vMaska} from 'maska';
+  
   export default {
     name: 'Multiselect',
+    directives: {
+      maska: vMaska,
+    },
     emits: [
       'open', 'close', 'select', 'deselect',
       'input', 'search-change', 'tag', 'update:modelValue',
