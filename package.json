@@ -12,6 +12,7 @@
     "css-default": "cleancss -O1 --format breakWith=lf --output themes/default.min.css dist/css/default.css"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.6",
     "@babel/preset-env": "^7.12.10",
     "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-babel": "^6.0.3",
@@ -28,8 +29,6 @@
     "vue": "^3.2.20"
   },
   "dependencies": {
-    "@babel/core": "^7.22.6",
-    "babel": "^6.23.0",
     "maska": "^2.1.3"
   }
 }
