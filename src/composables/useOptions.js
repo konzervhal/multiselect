@@ -11,7 +11,7 @@ export default function useOptions (props, context, dep)
     appendNewTag, multipleLabel, object, loading, delay, resolveOnLoad,
     minChars, filterResults, clearOnSearch, clearOnSelect, valueProp,
     canDeselect, max, strict, closeOnSelect, groups: groupped, groupLabel,
-    groupOptions, groupHideEmpty, groupSelect, closeOnDeselect
+    groupOptions, groupHideEmpty, groupSelect, closeOnDeselect,modelValue
   } = toRefs(props)
 
   // ============ DEPENDENCIES ============
@@ -524,9 +524,6 @@ export default function useOptions (props, context, dep)
   const initInternalValue = () => {
     if (!isNullish(ev.value)) {
       iv.value = makeInternal(ev.value)
-      if(isNullish(iv.value.value)){
-        update(null)
-      }
     }
   }
 

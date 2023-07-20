@@ -716,6 +716,7 @@
         isOpen: dropdown.isOpen,
         isAddOpen: isAddOpen,
         multi: multi,
+        value: value.ev
       })
 
       const data = useData(props, context, {

@@ -12,6 +12,7 @@ export default function useMultiselect (props, context, dep){
   const isOpen = dep.isOpen
   const isAddOpen = dep.isAddOpen
   const multi = dep.multi
+  const externalValue = dep.value
 
   // ================ DATA ================
 
@@ -231,7 +232,7 @@ export default function useMultiselect (props, context, dep){
   }
 
   const setMulti = ()=> {
-    multi.value = multiselect.value
+    multi.value = externalValue.value
     multi.optionRows = optionRows
   }
 
