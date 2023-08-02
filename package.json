@@ -1,5 +1,5 @@
 {
-  "name": "zrm-multiselect",
+  "name": "multiselect",
   "version": "2.6.3",
   "description": "Vue 3 multiselect component with single select, multiselect and tagging options.",
   "main": "./dist/multiselect.js",
